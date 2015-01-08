@@ -908,7 +908,8 @@ module ActionMailer
 
       def collect_responses(headers)
         if block_given?
-          collector = ActionMailer::Collector.new(lookup_context) { render(action_name) }
+          templates_name = headers[:template_name] || action_name
+          collector = ActionMailer::Collector.new(lookup_context) { render(templates_name) }
           yield(collector)
           collector.responses
         elsif headers[:body]
@@ -919,6 +920,7 @@ module ActionMailer
       end
 
       def collect_responses_from_text(headers)
+        collector = ActionMailer::Collector.new(lookup_context) { render(action_name) }
         [{
           body: headers.delete(:body),
           content_type: headers[:content_type] || "text/plain"
