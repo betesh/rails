@@ -575,7 +575,7 @@ module ActiveRecord
       end
 
       VALID_AUTOMATIC_INVERSE_MACROS = [:has_many, :has_one, :belongs_to]
-      INVALID_AUTOMATIC_INVERSE_OPTIONS = [:through, :foreign_key]
+      INVALID_AUTOMATIC_INVERSE_OPTIONS = [:through]
 
       def add_as_source(seed)
         seed
@@ -648,6 +648,7 @@ module ActiveRecord
         # Anything with a scope can additionally ruin our attempt at finding an
         # inverse, so we exclude reflections with scopes.
         def can_find_inverse_of_automatically?(reflection)
+          reflection.active_record.name &&
           reflection.options[:inverse_of] != false &&
             VALID_AUTOMATIC_INVERSE_MACROS.include?(reflection.macro) &&
             !INVALID_AUTOMATIC_INVERSE_OPTIONS.any? { |opt| reflection.options[opt] } &&
